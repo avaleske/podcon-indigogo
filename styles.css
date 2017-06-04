@@ -1,0 +1,81 @@
+@font-face {
+  font-family: 'SoleilBk';
+  src: url('./fonts/TypeTogether - SoleilBk.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'SoleilXb';
+  src: url('./fonts/TypeTogether - SoleilXb.otf') format('opentype');
+}
+
+body {
+  margin: 0;
+}
+
+.wrapper {
+  position: relative;
+  box-sizing: border-box;
+  background-color: #EEEEEE;
+  width: 460px;
+  height: 638px;
+  padding: 25px 20px;
+  text-align: center;
+  overflow: none;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #F5A74F;
+  font-family: "SoleilXb", "Helvetica";
+  text-transform: uppercase;
+  font-size: 40px;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 25px 0;
+  color: #386A6D;
+  font-size: 30px;
+  font-family: "SoleilXb", "Helvetica";
+  font-weight: normal;
+  letter-spacing: .5px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.amount {
+  display: inline-block;
+  white-space: pre;
+}
+
+.amount::before {
+  content: ' ';
+}
+
+.total {
+  position: absolute;
+  bottom: 0;
+}
+
+.total_amount {
+  width: 100%;
+  margin: 15px 0;
+  color: #386A6D;
+  font-size: 90px;
+  font-family: "SoleilXb", "Helvetica";
+}

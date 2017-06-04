@@ -1,0 +1,9 @@
+Colors are:
+
+Background #EEEEEE
+Orange: #F5A74F
+Blue: #386A6D
+
+Dimensions: 460 x 638
+
+campaign id: 2077155
