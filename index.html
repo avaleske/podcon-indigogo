@@ -10,7 +10,7 @@
     <div class="wrapper">
        <div class="contributors">
           <h3>Last 6 Supporters</h3>
-          <ul>
+          <ul class="contributor-list">
             <li><span class="name">Placeholder Alpha</span><span class="amount">$50</span></li>
             <li><span class="name">Placeholder Gamma</span><span class="amount">$25</span></li>
             <li><span class="name">Placeholder Delta Delta</span><span class="amount">$1000</span></li>
@@ -21,10 +21,78 @@
        </div>
        <div class="total">
           <h3>Total Raised</h3>
-          <div class="total_amount">
-          $9,153,304
+          <div class="total-amount">
+          $153,304
           </div>
        </div>
     </div>
+    <script>
+      var CAMPAIGN_ID = '2077155';
+      var API_TOKEN = '[YOUR API TOKEN]';
+      var UPDATE_FREQUENCY = 5000;
+
+      function numberWithCommas(x) {
+        if (typeof x === 'undefined') {
+          return undefined;
+        }
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function updateTotalAmount() {
+        // $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+".json?api_token="+API_TOKEN, function(json) {
+        $.getJSON(
+          "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_campaign_data.json",
+          function(json) {
+            if (json.response.collected_funds) {
+              $(".total-amount").text("$"+numberWithCommas(json.response.collected_funds));
+            }
+        });
+      }
+
+      function updateContributors() {
+        // $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+"/contributions.json?api_token="+API_TOKEN, function(json) {
+        $.getJSON(
+          "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_contribution_data.json",
+          function(json) {
+            if (json.response && json.response.length > 0) {
+              var topSix = json.response.slice(0, Math.min(6, json.response.length)).map(function(contribution) {
+                return {
+                  by: contribution.by || 'Anonymous',
+                  amount: contribution.amount ? '$'+numberWithCommas(contribution.amount) : 'Secret',
+                  id: contribution.id,
+                  time: contribution.created_at
+                };
+              });
+              
+              var $items = topSix.map(function(contribution) {
+                return $('<li />')
+                          .append($('<span />').addClass('name').text(contribution.by))
+                          .append($('<span />').addClass('amount').text(contribution.amount));
+              });
+              
+              var $list = $(".contributor-list");
+
+              // clear existing list
+              $list.empty();
+
+              // add the new ones on top.
+              $.each($items.reverse(), function(i, $item) {
+                $list.prepend($item);
+              });
+            }
+        });
+      }
+
+      $(document).ready(function() {
+        setInterval(updateTotalAmount, UPDATE_FREQUENCY);
+        setInterval(updateContributors, UPDATE_FREQUENCY);
+     });
+      /* every 1 second:
+        - check for total amount
+        - when it returns, update total amount
+        - check for last six contributions
+        - when it returns, update the list (maybe scroll with jquery)
+      */
+    </script>
   </body>
 </html>
