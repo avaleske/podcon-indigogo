@@ -50,7 +50,7 @@
                 // adjust font size if we have a large number
                 .addClass(amount > 999999 ? 'total-amount--over-one-million' : '');
             }
-        });
+        }).fail(function(d, textStatus, error){console.log('update failed, trying again in '+UPDATE_FREQUENCY+'ms')});
       }
 
       function updateContributors() {
@@ -62,7 +62,7 @@
               var topSix = json.response.slice(0, Math.min(6, json.response.length)).map(function(contribution) {
                 return {
                   by: contribution.by || 'Anonymous',
-                  amount: contribution.amount ? '$'+numberWithCommas(contribution.amount) : 'Secret',
+                  amount: contribution.amount ? '$'+numberWithCommas(contribution.amount) : '$secret',
                   id: contribution.id,
                   time: contribution.created_at
                 };
@@ -84,19 +84,24 @@
                 $list.prepend($item);
               });
             }
-        });
+        }).fail(function(d, textStatus, error){console.log('update failed, trying again in '+UPDATE_FREQUENCY+'ms')});
       }
 
       $(document).ready(function() {
-        setInterval(updateTotalAmount, UPDATE_FREQUENCY);
-        setInterval(updateContributors, UPDATE_FREQUENCY);
+        (function totalLoop() {
+          setTimeout(function() {
+            updateTotalAmount();
+            totalLoop();
+          }, UPDATE_FREQUENCY);
+        })();
+
+        (function contribLoop() {
+          setTimeout(function() {
+            updateContributors();
+            contribLoop();
+          }, UPDATE_FREQUENCY);
+        })();
      });
-      /* every 1 second:
-        - check for total amount
-        - when it returns, update total amount
-        - check for last six contributions
-        - when it returns, update the list (maybe scroll with jquery)
-      */
     </script>
   </body>
 </html>
