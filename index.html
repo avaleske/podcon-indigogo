@@ -44,7 +44,11 @@
           "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_campaign_data.json",
           function(json) {
             if (json.response.collected_funds) {
-              $(".total-amount").text("$"+numberWithCommas(json.response.collected_funds));
+              var amount = json.response.collected_funds;
+              $(".total-amount")
+                .text("$"+numberWithCommas(amount))
+                // adjust font size if we have a large number
+                .addClass(amount > 999999 ? 'total-amount--over-one-million' : '');
             }
         });
       }

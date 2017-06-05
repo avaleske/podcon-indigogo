@@ -75,8 +75,13 @@ li {
 
 .total-amount {
   width: 100%;
+  height: 101px;
   margin: 15px 0;
   color: #386A6D;
   font-size: 90px;
   font-family: "SoleilXb", "Helvetica";
+}
+
+.total-amount.total-amount--over-one-million {
+  font-size: 80px;
 }
