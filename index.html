@@ -11,25 +11,25 @@
        <div class="contributors">
           <h3>Last 6 Supporters</h3>
           <ul class="contributor-list">
-            <li><span class="name">Placeholder Alpha</span><span class="amount">$50</span></li>
+            <!-- <li><span class="name">Placeholder Alpha</span><span class="amount">$50</span></li>
             <li><span class="name">Placeholder Gamma</span><span class="amount">$25</span></li>
             <li><span class="name">Placeholder Delta Delta</span><span class="amount">$1000</span></li>
             <li><span class="name">Alexaaandar Hamilton very long name</span><span class="amount">$1000</span></li>
             <li><span class="name">Placeholder Alpha</span><span class="amount">$50</span></li>
-            <li><span class="name">Placeholder Gamma</span><span class="amount">$25</span></li>
+            <li><span class="name">Placeholder Gamma</span><span class="amount">$25</span></li> -->
           </ul>
        </div>
        <div class="total">
           <h3>Total Raised</h3>
           <div class="total-amount">
-          $153,304
+            $ -
           </div>
        </div>
     </div>
     <script>
       var CAMPAIGN_ID = '2077155';
-      var API_TOKEN = '[YOUR API TOKEN]';
-      var UPDATE_FREQUENCY = 5000;
+      var API_TOKEN = null;
+      var UPDATE_FREQUENCY = 2000;
 
       function numberWithCommas(x) {
         if (typeof x === 'undefined') {
@@ -38,11 +38,23 @@
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
 
+      function QueryStringToJSON() {            
+          var pairs = location.search.slice(1).split('&');
+          
+          var result = {};
+          pairs.forEach(function(pair) {
+              pair = pair.split('=');
+              result[pair[0]] = decodeURIComponent(pair[1] || '');
+          });
+
+          return JSON.parse(JSON.stringify(result));
+      }
+
       function updateTotalAmount() {
-        // $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+".json?api_token="+API_TOKEN, function(json) {
-        $.getJSON(
-          "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_campaign_data.json",
-          function(json) {
+        $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+".json?api_token="+API_TOKEN, function(json) {
+        // $.getJSON(
+        //   "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_campaign_data.json",
+        //   function(json) {
             if (json.response.collected_funds) {
               var amount = json.response.collected_funds;
               $(".total-amount")
@@ -54,10 +66,10 @@
       }
 
       function updateContributors() {
-        // $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+"/contributions.json?api_token="+API_TOKEN, function(json) {
-        $.getJSON(
-          "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_contribution_data.json",
-          function(json) {
+        $.getJSON("https://api.indiegogo.com/1/campaigns/"+CAMPAIGN_ID+"/contributions.json?api_token="+API_TOKEN, function(json) {
+        // $.getJSON(
+        //   "https://raw.githubusercontent.com/avaleske/podcon-indigogo/master/mock_contribution_data.json",
+        //   function(json) {
             if (json.response && json.response.length > 0) {
               var topSix = json.response.slice(0, Math.min(6, json.response.length)).map(function(contribution) {
                 return {
@@ -87,20 +99,31 @@
         }).fail(function(d, textStatus, error){console.log('update failed, trying again in '+UPDATE_FREQUENCY+'ms')});
       }
 
-      $(document).ready(function() {
-        (function totalLoop() {
-          setTimeout(function() {
-            updateTotalAmount();
-            totalLoop();
-          }, UPDATE_FREQUENCY);
-        })();
+      // wrap the update functions in a loop
+      function totalLoop() {
+        setTimeout(function() {
+          updateTotalAmount();
+          totalLoop();
+        }, UPDATE_FREQUENCY);
+      }
 
-        (function contribLoop() {
-          setTimeout(function() {
-            updateContributors();
-            contribLoop();
-          }, UPDATE_FREQUENCY);
-        })();
+      function contribLoop() {
+        setTimeout(function() {
+          updateContributors();
+          contribLoop();
+        }, UPDATE_FREQUENCY);
+      }
+
+      // and actually do the things
+      $(document).ready(function() {
+        var queryString = QueryStringToJSON();
+        if (queryString.key) {
+          API_TOKEN = queryString.key;
+          totalLoop();
+          contribLoop();
+        } else {
+          alert('API key needed. Add `?key=<api_token>` to the end of the url');
+        }
      });
     </script>
   </body>
