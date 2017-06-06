@@ -85,3 +85,16 @@ li {
 .total-amount.total-amount--over-one-million {
   font-size: 80px;
 }
+
+.pause-button {
+  margin-top: 100px;
+}
+
+.pause-button .play {
+  display: none;
+}
+
+.error {
+  background-color: red;
+  display: none;
+}

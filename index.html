@@ -26,6 +26,13 @@
           </div>
        </div>
     </div>
+    <div class="pause-button">
+      <button class="pause">Pause</button>
+      <button class="play">Play</button>
+    </div>
+    <div class="error">
+      Something went wrong. try pausing for a few minutes and then try again.
+    </div>
     <script>
       var CAMPAIGN_ID = '2077155';
       var API_TOKEN = null;
@@ -64,11 +71,8 @@
                 .addClass(amount > 999999 ? 'total-amount--over-one-million' : '');
             }
         }).fail(function(d, textStatus, error){
-          console.log('update failed, trying again in 5 min')
-          pause = true;
-          setTimeout(function() {
-            pause = false;
-          }, 5 * 60 * 1000);
+          console.log('update failed, trying again in '+UPDATE_FREQUENCY+' ms');
+          $('.error').show();
         });
       }
 
@@ -104,11 +108,8 @@
               });
             }
         }).fail(function(d, textStatus, error){
-          console.log('update failed, trying again in 5 min')
-          pause = true;
-          setTimeout(function() {
-            pause = false;
-          }, 5 * 60 * 1000);
+          console.log('update failed, trying again in '+UPDATE_FREQUENCY+' ms');
+          $('.error').show();
         });
       }
 
@@ -130,6 +131,19 @@
           contribLoop();
         }, UPDATE_FREQUENCY);
       }
+
+      $('.pause').click(function() {
+        $('.pause').hide();
+        $('.play').show();
+        $('.error').hide();
+        pause = true;
+      });
+
+      $('.play').click(function() {
+        $('.play').hide();
+        $('.pause').show();
+        pause = false;
+      });
 
       // and actually do the things
       $(document).ready(function() {
