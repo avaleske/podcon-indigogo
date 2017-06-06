@@ -30,6 +30,7 @@
       var CAMPAIGN_ID = '2077155';
       var API_TOKEN = null;
       var UPDATE_FREQUENCY = 4000;
+      var pause = false;
 
       function numberWithCommas(x) {
         if (typeof x === 'undefined') {
@@ -62,7 +63,13 @@
                 // adjust font size if we have a large number
                 .addClass(amount > 999999 ? 'total-amount--over-one-million' : '');
             }
-        }).fail(function(d, textStatus, error){console.log('update failed, trying again in '+UPDATE_FREQUENCY+'ms')});
+        }).fail(function(d, textStatus, error){
+          console.log('update failed, trying again in 5 min')
+          pause = true;
+          setTimeout(function() {
+            pause = false;
+          }, 5 * 60 * 1000);
+        });
       }
 
       function updateContributors() {
@@ -96,20 +103,30 @@
                 $list.prepend($item);
               });
             }
-        }).fail(function(d, textStatus, error){console.log('update failed, trying again in '+UPDATE_FREQUENCY+'ms')});
+        }).fail(function(d, textStatus, error){
+          console.log('update failed, trying again in 5 min')
+          pause = true;
+          setTimeout(function() {
+            pause = false;
+          }, 5 * 60 * 1000);
+        });
       }
 
       // wrap the update functions in a loop
       function totalLoop() {
         setTimeout(function() {
-          updateTotalAmount();
+          if (!pause) {
+            updateTotalAmount();
+          }
           totalLoop();
         }, UPDATE_FREQUENCY);
       }
 
       function contribLoop() {
         setTimeout(function() {
-          updateContributors();
+          if (!pause) {
+            updateContributors();
+          }
           contribLoop();
         }, UPDATE_FREQUENCY);
       }
