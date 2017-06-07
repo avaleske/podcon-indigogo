@@ -7,6 +7,7 @@
     crossorigin="anonymous"></script>
   </head>
   <body>
+    <div class="cover"></div>
     <div class="wrapper">
        <div class="contributors">
           <h3>Last 6 Supporters</h3>
@@ -32,6 +33,10 @@
     </div>
     <div class="error">
       Something went wrong. try pausing for a few minutes and then try again.
+    </div>
+    <div class="hide-buttons">
+      <button class="hide-all">Hide everything (go to blank screen)</button>
+      <button class="unhide-all">Unhide everything</button>
     </div>
     <script>
       var CAMPAIGN_ID = '2077155';
@@ -145,11 +150,29 @@
         pause = false;
       });
 
+      $('.hide-all').click(function() {
+        $('.hide-all').hide();
+        $('.unhide-all').show();
+        $('.wrapper').hide();
+        $('.cover').show();
+      });
+
+      $('.unhide-all').click(function() {
+        $('.unhide-all').hide();
+        $('.hide-all').show();
+        $('.cover').hide();
+        $('.wrapper').show();
+      });
+
       // and actually do the things
       $(document).ready(function() {
         var queryString = QueryStringToJSON();
         if (queryString.key) {
           API_TOKEN = queryString.key;
+          // initial load
+          updateTotalAmount();
+          updateContributors();
+          // and then start loop
           totalLoop();
           contribLoop();
         } else {

@@ -98,3 +98,19 @@ li {
   background-color: red;
   display: none;
 }
+
+.unhide-all {
+  display: none;
+}
+
+.cover {
+  display: none;
+  position: relative;
+  box-sizing: border-box;
+  background-color: #EEEEEE;
+  width: 460px;
+  height: 638px;
+  padding: 25px 20px;
+  text-align: center;
+  overflow: none;
+}
